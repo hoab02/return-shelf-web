@@ -38,61 +38,33 @@
     </div>
 </section>
 
-<section class="table-card">
-    <div class="section-head">
-        <div>
-            <h3>Scenarios of type {{ selected_type }}</h3>
-            <p>Overview of each scenario and the number of execution tasks it contains.</p>
-        </div>
-    </div>
+<div id="scenarios-table-container">
+    {% include "partials/scenarios_table.html" %}
+</div>
 
-    <div class="table-wrap">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Scenario ID</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Task Count</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if scenarios %}
-                    {% for scenario in scenarios %}
-                    <tr>
-                        <td>
-                            <div class="primary-text">{{ scenario.scenario_id }}</div>
-                        </td>
-                        <td>
-                            <span class="badge badge-soft">{{ scenario.type }}</span>
-                        </td>
-                        <td>
-                            <span class="badge status-{{ scenario.status|lower|replace('_', '-') }}">
-                                {{ scenario.status }}
-                            </span>
-                        </td>
-                        <td>{{ scenario.created_at }}</td>
-                        <td>
-                            <span class="count-pill">{{ scenario.execution_task_count }}</span>
-                        </td>
-                        <td class="text-right">
-                            <a class="btn btn-primary" href="/scenarios/{{ scenario.scenario_id }}/tasks">
-                                View Tasks
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="6" class="empty-cell">
-                            No scenarios found for type {{ selected_type }}.
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</section>
+<script>
+(function () {
+    const selectedType = "{{ selected_type }}";
+    const refreshIntervalMs = {{ refresh_interval_ms | default(10000) }};
+    const container = document.getElementById("scenarios-table-container");
+
+    async function refreshScenariosTable() {
+        try {
+            const response = await fetch(`/partials/scenarios-table?type=${encodeURIComponent(selectedType)}`, {
+                headers: { "X-Requested-With": "fetch" },
+                cache: "no-store"
+            });
+
+            if (!response.ok) return;
+
+            const html = await response.text();
+            container.innerHTML = html;
+        } catch (error) {
+            console.error("Failed to refresh scenarios table:", error);
+        }
+    }
+
+    setInterval(refreshScenariosTable, refreshIntervalMs);
+})();
+</script>
 {% endblock %}

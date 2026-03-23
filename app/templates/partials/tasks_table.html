@@ -1,0 +1,62 @@
+<section class="table-card">
+    <div class="section-head">
+        <div>
+            <h3>Execution Tasks</h3>
+            <p>The list is sorted by ascending base sequence.</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Logical Task ID</th>
+                    <th>Status</th>
+                    <th>Scenario ID</th>
+                    <th>Station ID</th>
+                    <th>Shelf ID</th>
+                    <th>Seq</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if tasks %}
+                    {% for task in tasks %}
+                    <tr>
+                        <td class="text-right table-action-cell">
+                            {% if task.can_return %}
+                            <form method="post" action="/tasks/{{ task.logical_task_ids }}/return" class="inline-form">
+                                <input type="hidden" name="scenario_id" value="{{ task.scenario_id }}">
+                                <button type="submit" class="btn btn-danger">
+                                    Return Shelf
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="muted">Unavailable</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="primary-text">{{ task.logical_task_ids }}</div>
+                        </td>
+                        <td>
+                            <span class="badge status-{{ task.status|lower|replace('_', '-') }}">
+                                {{ task.status }}
+                            </span>
+                        </td>
+                        <td>{{ task.scenario_id }}</td>
+                        <td>{{ task.station_id }}</td>
+                        <td>{{ task.shelf_id }}</td>
+                        <td>{{ task.base_sequence }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="empty-cell">
+                            No execution tasks found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>

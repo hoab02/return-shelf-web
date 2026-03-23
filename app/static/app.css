@@ -86,6 +86,18 @@ a {
     box-shadow: 0 10px 20px rgba(37, 99, 235, 0.24);
 }
 
+.table-action-cell {
+    white-space: nowrap;
+    width: 1%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-action-cell .btn,
+.table-action-cell form {
+    margin: 0 auto;
+}
+
 .brand-text h1 {
     margin: 0;
     font-size: var(--fs-h1);
@@ -233,6 +245,16 @@ a {
     border-collapse: collapse;
 }
 
+.data-table th,
+.data-table td {
+    vertical-align: middle;
+}
+
+.data-table td .btn {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .data-table thead th {
     background: #f8fafc;
     color: #344054;
@@ -243,13 +265,15 @@ a {
     padding: 14px 16px;
     border-bottom: 1px solid var(--line);
     white-space: nowrap;
-    text-align: left;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .data-table tbody td {
     padding: 16px;
     border-bottom: 1px solid #eef2f7;
     vertical-align: middle;
+    text-align: center;
     font-size: var(--fs-body-sm);
     line-height: 1.5;
 }
@@ -263,10 +287,11 @@ a {
     font-weight: 700;
     line-height: 1.45;
     color: #111827;
+    text-align: center;
 }
 
 .text-right {
-    text-align: right;
+    text-align: center;
 }
 
 .count-pill {
@@ -368,6 +393,14 @@ a {
 
 .inline-form {
     margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.badge,
+.count-pill {
+    margin: 0 auto;
 }
 
 .alert {
@@ -513,7 +546,7 @@ a {
     }
 
     .text-right {
-        text-align: left;
+    text-align: center;
     }
 }
 

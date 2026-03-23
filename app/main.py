@@ -2,14 +2,13 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, Form, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import settings
 from app.service import (
     get_scenario_by_id,
-    get_scenario_types,
     get_scenarios_by_type,
     get_tasks_by_scenario_id,
     trigger_return_shelf,
@@ -62,6 +61,33 @@ async def scenario_list(
             "scenarios": scenarios,
             "message": message,
             "error": error,
+            "refresh_interval_ms": 10000,
+        },
+    )
+
+
+@app.get(
+    "/partials/scenarios-table",
+    response_class=HTMLResponse,
+)
+async def scenarios_table_partial(
+    request: Request,
+    type: Optional[str] = None,
+):
+    allowed_types = ["REPLENISHMENT", "PICKING"]
+    selected_type = (type or settings.DEFAULT_SCENARIO_TYPE).upper()
+
+    if selected_type not in allowed_types:
+        selected_type = settings.DEFAULT_SCENARIO_TYPE
+
+    scenarios = get_scenarios_by_type(selected_type)
+
+    return templates.TemplateResponse(
+        "partials/scenarios_table.html",
+        {
+            "request": request,
+            "selected_type": selected_type,
+            "scenarios": scenarios,
         },
     )
 
@@ -85,6 +111,46 @@ async def task_list(
             "tasks": tasks,
             "message": message,
             "error": error,
+            "refresh_interval_ms": 4000,
+        },
+    )
+
+
+@app.get(
+    "/partials/scenarios/{scenario_id}/summary",
+    response_class=HTMLResponse,
+)
+async def scenario_summary_partial(
+    request: Request,
+    scenario_id: str,
+):
+    scenario = get_scenario_by_id(scenario_id)
+
+    return templates.TemplateResponse(
+        "partials/scenario_summary.html",
+        {
+            "request": request,
+            "scenario": scenario,
+        },
+    )
+
+
+@app.get(
+    "/partials/scenarios/{scenario_id}/tasks-table",
+    response_class=HTMLResponse,
+)
+async def tasks_table_partial(
+    request: Request,
+    scenario_id: str,
+):
+    tasks = get_tasks_by_scenario_id(scenario_id)
+
+    return templates.TemplateResponse(
+        "partials/tasks_table.html",
+        {
+            "request": request,
+            "scenario_id": scenario_id,
+            "tasks": tasks,
         },
     )
 

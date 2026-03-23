@@ -1,0 +1,41 @@
+{% if scenario %}
+<section class="detail-card">
+    <div class="detail-card-top">
+        <div>
+            <div class="eyebrow">SCENARIO DETAIL</div>
+            <h2>{{ scenario.scenario_id }}</h2>
+            <p class="hero-desc">Browse the execution tasks linked to this scenario.</p>
+        </div>
+        <div class="detail-badges">
+            <span class="badge badge-soft">{{ scenario.type }}</span>
+            <span class="badge status-{{ scenario.status|lower|replace('_', '-') }}">
+                {{ scenario.status }}
+            </span>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="info-item">
+            <span class="info-label">Scenario ID</span>
+            <span class="info-value">{{ scenario.scenario_id }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Type</span>
+            <span class="info-value">{{ scenario.type }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value">{{ scenario.status }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Created At</span>
+            <span class="info-value">{{ scenario.created_at }}</span>
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="alert alert-error">
+    <div class="alert-title">Scenario not found</div>
+    <div>The selected scenario does not exist or has been removed.</div>
+</div>
+{% endif %}
