@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title or "Return Shelf Web" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}?v=2">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div>
+                    <div class="brand-row">
+                        <div class="brand-mark"></div>
+                        <div class="brand-text">
+                            <h1>Return Shelf Web</h1>
+                            <p>Dashboard for scenario monitoring and return shelf triggering</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-container">
+            {% if message %}
+            <div class="alert alert-success">
+                <div class="alert-title">Success</div>
+                <div>{{ message }}</div>
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="alert alert-error">
+                <div class="alert-title">An error occurred</div>
+                <div>{{ error }}</div>
+            </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

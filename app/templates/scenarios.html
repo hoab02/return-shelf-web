@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <div class="eyebrow">SCENARIO OVERVIEW</div>
+        <h2>Scenario List</h2>
+        <p class="hero-desc">
+            Choose a scenario type to filter the list. The default view shows the REPLENISHMENT group.
+        </p>
+    </div>
+</section>
+
+<section class="filter-card">
+    <div class="filter-header">
+        <div>
+            <h3>Scenario Type Filter</h3>
+            <p>Select one of the two fixed scenario types to view the corresponding data.</p>
+        </div>
+    </div>
+
+    <div class="type-switch">
+        <a
+            href="/scenarios?type=REPLENISHMENT"
+            class="type-btn {% if selected_type == 'REPLENISHMENT' %}type-btn-active{% endif %}"
+        >
+            <span class="type-btn-title">REPLENISHMENT</span>
+            <span class="type-btn-sub">Stock replenishment</span>
+        </a>
+
+        <a
+            href="/scenarios?type=PICKING"
+            class="type-btn {% if selected_type == 'PICKING' %}type-btn-active{% endif %}"
+        >
+            <span class="type-btn-title">PICKING</span>
+            <span class="type-btn-sub">Order picking</span>
+        </a>
+    </div>
+</section>
+
+<section class="table-card">
+    <div class="section-head">
+        <div>
+            <h3>Scenarios of type {{ selected_type }}</h3>
+            <p>Overview of each scenario and the number of execution tasks it contains.</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Scenario ID</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Task Count</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if scenarios %}
+                    {% for scenario in scenarios %}
+                    <tr>
+                        <td>
+                            <div class="primary-text">{{ scenario.scenario_id }}</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-soft">{{ scenario.type }}</span>
+                        </td>
+                        <td>
+                            <span class="badge status-{{ scenario.status|lower|replace('_', '-') }}">
+                                {{ scenario.status }}
+                            </span>
+                        </td>
+                        <td>{{ scenario.created_at }}</td>
+                        <td>
+                            <span class="count-pill">{{ scenario.execution_task_count }}</span>
+                        </td>
+                        <td class="text-right">
+                            <a class="btn btn-primary" href="/scenarios/{{ scenario.scenario_id }}/tasks">
+                                View Tasks
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-cell">
+                            No scenarios found for type {{ selected_type }}.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

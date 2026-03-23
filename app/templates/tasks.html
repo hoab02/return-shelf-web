@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-actions">
+    <a class="btn btn-secondary" href="/scenarios?type={{ scenario.type if scenario else 'REPLENISHMENT' }}">
+        ← Back to Scenario List
+    </a>
+</section>
+
+{% if scenario %}
+<section class="detail-card">
+    <div class="detail-card-top">
+        <div>
+            <div class="eyebrow">SCENARIO DETAIL</div>
+            <h2>{{ scenario.scenario_id }}</h2>
+            <p class="hero-desc">Execution tasks for the selected scenario.</p>
+        </div>
+        <div class="detail-badges">
+            <span class="badge badge-soft">{{ scenario.type }}</span>
+            <span class="badge status-{{ scenario.status|lower|replace('_', '-') }}">
+                {{ scenario.status }}
+            </span>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="info-item">
+            <span class="info-label">Scenario ID</span>
+            <span class="info-value">{{ scenario.scenario_id }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Type</span>
+            <span class="info-value">{{ scenario.type }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value">{{ scenario.status }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Created At</span>
+            <span class="info-value">{{ scenario.created_at }}</span>
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="alert alert-error">
+    <div class="alert-title">Scenario not found</div>
+    <div>The selected scenario does not exist or has been removed.</div>
+</div>
+{% endif %}
+
+<section class="table-card">
+    <div class="section-head">
+        <div>
+            <h3>Execution Tasks</h3>
+            <p>The list is sorted by ascending base_sequence.</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Seq</th>
+                    <th>Logical Task IDs</th>
+                    <th>Scenario ID</th>
+                    <th>Station ID</th>
+                    <th>Shelf ID</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if tasks %}
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.base_sequence }}</td>
+                        <td>
+                            <div class="primary-text">{{ task.logical_task_ids }}</div>
+                        </td>
+                        <td>{{ task.scenario_id }}</td>
+                        <td>{{ task.station_id }}</td>
+                        <td>{{ task.shelf_id }}</td>
+                        <td>
+                            <span class="badge status-{{ task.status|lower|replace('_', '-') }}">
+                                {{ task.status }}
+                            </span>
+                        </td>
+                        <td class="text-right">
+                            {% if task.can_return %}
+                            <form method="post" action="/tasks/{{ task.logical_task_ids }}/return" class="inline-form">
+                                <input type="hidden" name="scenario_id" value="{{ task.scenario_id }}">
+                                <button type="submit" class="btn btn-danger">
+                                    Return Shelf
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="muted">Unavailable</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="empty-cell">
+                            No execution tasks found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
